@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    ports:
+      - '3000:3000'
+    # dockerコマンドで指定していた時は、絶対パスでローカルを指定していたが、docker-compose.yml上では相対パスを記載すること。
+    volumes:
+      - '.:/product-rails'
+    # docker run "-t" と同じ意味。ターミナルの表示を綺麗に保ってくれる。
+    tty: true
+    # docker run "-i" と同じ意味。ローカルのターミナルからコンテナへの入力ができるようになる。
+    stdin_open: true
