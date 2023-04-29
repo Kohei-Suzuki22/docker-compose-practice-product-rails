@@ -1,0 +1,22 @@
+name: product-rails-ci
+
+on:
+  pull_request:
+    branches: master
+
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: docke-compose up
+        run: docker-compose up --build -d
+      - name: rails:db create on docker
+        run: docker-compose exec --env 'RAILS_ENV=test' web rails db:create
+      - name: rails:db migrate on docker
+        run: docker-compose exec --env 'RAILS_ENV=test' web rails db:migrate
+      - name: rails test on docker
+        run: doker-compose exec --env 'RAILS_ENV=test' web rails test
+
