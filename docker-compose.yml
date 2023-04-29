@@ -1,5 +1,10 @@
 version: '3.9'
 
+# docker volumeを作る。 
+## これで、Docker上で仮想的なvolumeスペースを確保してくれる。
+volumes:
+  db-data:
+
 services:
   web:
     build: .
@@ -8,7 +13,21 @@ services:
     # dockerコマンドで指定していた時は、絶対パスでローカルを指定していたが、docker-compose.yml上では相対パスを記載すること。
     volumes:
       - '.:/product-rails'
+    environment:
+      - 'DATABASE_PASSWORD=postgres'
     # docker run "-t" と同じ意味。ターミナルの表示を綺麗に保ってくれる。
     tty: true
     # docker run "-i" と同じ意味。ローカルのターミナルからコンテナへの入力ができるようになる。
     stdin_open: true
+    # 指定したサービスコンテナが立ち上がってから、こっちのコンテナを立ち上げる。
+    depends_on:
+      - db
+    # "links"を指定することによって、このコンテナから、指定したコンテナに対してアクセスすることができるようになる。
+    links:
+      - db
+  db:
+    image: postgres
+    # ここで指定しているホスト側のパス 'db-data'がない場合は、コンテナのvolumeを指定することができる。
+    # 一番上に記載してある、"volumes: db-data:" がそれの作成を指示している。
+    volumes:
+      - 'db-data:/var/lib/postgresql/data'
