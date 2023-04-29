@@ -21,5 +21,5 @@ jobs:
       - name: rails:db migrate on docker
         run: docker-compose exec -T --env 'RAILS_ENV=test' web rails db:migrate
       - name: rails test on docker
-        run: doker-compose exec -T --env 'RAILS_ENV=test' web rails test
+        run: docker-compose exec -T --env 'RAILS_ENV=test' web rails test
 
