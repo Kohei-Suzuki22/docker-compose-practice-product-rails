@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  hello:
+  execute-ci:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
