@@ -31,3 +31,6 @@ services:
     # 一番上に記載してある、"volumes: db-data:" がそれの作成を指示している。
     volumes:
       - 'db-data:/var/lib/postgresql/data'
+    # CIサーバー上など、ローカル以外で、postgresを動かすためには、POSTGRES_HOST_AUTH_METHODを入れなければいけない。
+    environment:
+      - 'POSTGRES_HOST_AUTH_METHOD=trust'
