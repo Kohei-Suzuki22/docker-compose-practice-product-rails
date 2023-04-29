@@ -14,9 +14,12 @@ jobs:
       - name: docke-compose up
         run: docker-compose up --build -d
       - name: rails:db create on docker
-        run: docker-compose exec --env 'RAILS_ENV=test' web rails db:create
+      # -Tをつけなければ、github actions上では、"the input device is not a TTY"エラーが発生する。
+      # -Tをつけると、疑似ttyの割り当てを無効化できる。
+      # (ttyは、ローカルでのデバッグ時には見やすいが、CI実行時は特に必要ないため、-Tで無効化する。)
+        run: docker-compose exec -T --env 'RAILS_ENV=test' web rails db:create
       - name: rails:db migrate on docker
-        run: docker-compose exec --env 'RAILS_ENV=test' web rails db:migrate
+        run: docker-compose exec -T --env 'RAILS_ENV=test' web rails db:migrate
       - name: rails test on docker
-        run: doker-compose exec --env 'RAILS_ENV=test' web rails test
+        run: doker-compose exec -T --env 'RAILS_ENV=test' web rails test
 
