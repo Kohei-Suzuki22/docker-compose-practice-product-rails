@@ -1,0 +1,25 @@
+name: product-rails-ci
+
+on:
+  pull_request:
+    branches: master
+
+
+jobs:
+  execute-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: docke-compose up
+        run: docker-compose up --build -d
+      - name: rails:db create on docker
+      # -Tをつけなければ、github actions上では、"the input device is not a TTY"エラーが発生する。
+      # -Tをつけると、疑似ttyの割り当てを無効化できる。
+      # (ttyは、ローカルでのデバッグ時には見やすいが、CI実行時は特に必要ないため、-Tで無効化する。)
+        run: docker-compose exec -T --env 'RAILS_ENV=test' web rails db:create
+      - name: rails:db migrate on docker
+        run: docker-compose exec -T --env 'RAILS_ENV=test' web rails db:migrate
+      - name: rails test on docker
+        run: docker-compose exec -T --env 'RAILS_ENV=test' web rails test
+
